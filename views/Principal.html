@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Modacol</title>
+  <link rel="stylesheet" href="/Estilos/General.css">
+  <script src="/Js/Principal.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+      <img src="/Images/logo.png" alt="" class="Logo" >
+      <h3 class="menssage">Ingresaste como Administrador General</h3>
+      <a onclick="Roles()">Gestión Roles</a>
+      <a onclick="abrirVentas()">Gestión Ventas</a>
+      <a onclick="abrirProductos()">Gestión Productos</a>
+      <a onclick="abrirProveedores()">Gestión Proveedores</a>
+      <a onclick="abrirClientes()">Gestión Clientes</a>
+      <a onclick="abrirCompras()">Gestión Compras</a>
+      <a onclick="abrirCategorias()">Gestión Categorias</a>
+      <a onclick="abrirFlujo()">Gestión Flujo de Caja</a>
+    </div>
+      <main class="contenido">
+          <table class="funciones">
+            <thead>
+              <tr>
+                <th><a onclick="Roles()"><img src="/Images/iconos/image (2).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirVentas()"><img src="/Images/iconos/image (3).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirProductos()"><img src="/Images/iconos/image (4).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirProveedores()"><img src="/Images/iconos/image (5).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirClientes()"><img src="/Images/iconos/image (6).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirCompras()"><img src="/Images/iconos/image (7).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirCategorias()"><img src="/Images/iconos/image (8).png" alt="" class="icon"></a></th>
+                <th><a onclick="abrirFlujo()"><img src="/Images/iconos/image (8).png" alt="" class="icon"></a></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a onclick="Roles()">Roles</a></td>
+                <td><a onclick="abrirVentas()">Ventas</a></td>
+                <td><a onclick="abrirProductos()">Productos</a></td>
+                <td><a onclick="abrirProveedores()">Proveedores</a></td>
+                <td><a onclick="abrirClientes()"></a>Clientes</td>
+                <td><a onclick="abrirCompras()"></a>Compras</td>
+                <td><a onclick="abrirCategorias()"></a>Categorias</td>
+                <td><a onclick="abrirFlujo()"></a>Flujo Caja</td>
+              </tr>
+            </tbody>
+          </table>
+      </main>
+
+      <!-- ventana usuarios -->
+      <form>
+              <div class="form-container">
+                <div class="form-group">
+                  <label for="campo1">Nombre Completo</label>
+                  <input type="text" id="campo1" name="campo1">
+                </div>
+                <div class="form-group">
+                  <label for="campo2">Cedula</label>
+                  <input type="text" id="campo2" name="campo2">
+                </div>
+                <div class="form-group">
+                  <label for="campo3">Correo</label>
+                  <input type="text" id="campo3" name="campo3">
+                </div>
+                <div class="form-group">
+                  <label for="campo4">Nombre</label>
+                  <input type="text" id="campo4" name="campo4">
+                </div>
+                <div class="form-group">
+                  <label for="campo5">Campo 5</label>
+                  <input type="text" id="campo5" name="campo5">
+                </div>
+                <div class="form-group">
+                  <label for="campo6">Campo 6</label>
+                  <input type="text" id="campo6" name="campo6">
+                </div>
+                <div class="form-group">
+                  <label for="campo7">Campo 7</label>
+                  <input type="text" id="campo7" name="campo7">
+                </div>
+                <div class="form-group">
+                  <label for="campo8">Campo 8</label>
+                  <input type="text" id="campo8" name="campo8">
+                </div>
+                <div class="form-group">
+                  <label for="campo9">Campo 9</label>
+                  <input type="text" id="campo9" name="campo9">
+                </div>
+              </div>
+
+      <!-- ventana Roles -->
+      
+        <div id="Roles" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarRoles()" style="display: flex;">&times;</span>
+            <table>
+                <thead>
+                  <tr>
+                    <th>h</th>
+                    <th>h</th>
+                    <th>h</th>
+                  </tr>
+                </thead>
+              <tbody>
+                  <tr>
+                    <td>h</td>
+                    <td>h</td>
+                    <td>h</td>
+                  </tr>
+              </tbody>
+            </table>
+      
+            <table class="emergente">
+                <thead>
+                  <tr>
+                    <th>h</th>
+                    <th>h</th>
+                    <th>j</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>h</td>
+                    <td>h</td>
+                    <td>h</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+
+      <!-- ventana Ventas -->
+
+       <div id="Ventas" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarVentas()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+      <!-- ventana Productos -->
+
+       <div id="Productos" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarProductos()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+        
+      <!-- ventana Proveedores -->
+
+       <div id="Proveedores" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarProveedores()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+
+      <!-- ventana Clientes -->
+
+       <div id="Clientes" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarClientes()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+
+      <!-- ventana Compras -->
+
+       <div id="Compras" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarCompras()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+      <!-- ventana Categorias -->
+
+       <div id="Categorias" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarCategorias()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+      <!-- ventana Flujo de Caja -->
+
+       <div id="Flujo" class="modal">
+          <div class="modal-contenido">
+            <span class="cerrar" onclick="CerrarFlujo()">&times;</span>
+            <p>¡Ventas!</p>
+          </div>
+        </div>
+
+    
+
+
+</body>
+</html>
+
+
+
+
+
