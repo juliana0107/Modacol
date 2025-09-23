@@ -1,0 +1,68 @@
+/* Estilos para la tabla */
+* {
+    font-family: 'Montserrat' !important;
+}
+body {
+  background: linear-gradient(to right, #000000, #c39212, #272d73, #7c0013);
+  height: 100vh;
+  margin: 0;
+}
+
+.table {
+    background-color: #f8f9fa; /* Fondo suave para la tabla */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    background-color: transparent; /* Removemos el fondo blanco */
+    border-color: #ddd; /* Hacemos que las celdas tengan un borde más suave */
+}
+
+.table th {
+    color: #495057; /* Título de las columnas en un gris oscuro */
+    font-weight: bold;
+}
+
+/* Estilo para el estado activo/inactivo */
+.badge {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+/* Estilo para los botones */
+.btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 20px;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    border-color: #e67e22;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    border-color: #27ae60;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    border-color: #c0392b;
+}
+
+/* Añadir color de hover para los botones */
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* Estilos generales */
+.table-responsive {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
