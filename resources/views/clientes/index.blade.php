@@ -1,14 +1,39 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('title', 'Gestión de Clientes')
 
 @section('content')
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Clientes</h2>
     <a href="{{ route('clientes.create') }}" class="btn btn-primary">
         <i class="fas fa-plus me-1"></i> Nuevo Cliente
     </a>
+<div class="btn-group">
+        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="fas fa-download me-1"></i> Exportar Excel
+        </button>
+        <ul class="dropdown-menu">
+
+            <li>
+                <a class="dropdown-item" href="{{ route('clientes.exportar-excel', array_merge(request()->except(['tipo']), ['tipo' => 'detallado'])) }}">
+                    <i class="far fa-file-excel me-2"></i> Reporte Detallado
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
+
+
+<form method="GET" action="{{ route('clientes.index') }}" class="d-flex mb-4">
+    <input type="text" name="nombre" class="form-control" placeholder="Buscar por nombre" value="{{ request()->nombre }}">
+    <input type="text" name="correo" class="form-control ms-2" placeholder="Buscar por correo" value="{{ request()->correo }}">
+    <select name="estado" class="form-select ms-2">
+        <option value="">Estado</option>
+        <option value="1" {{ request()->estado == '1' ? 'selected' : '' }}>Activo</option>
+        <option value="0" {{ request()->estado == '0' ? 'selected' : '' }}>Inactivo</option>
+    </select>
+    <button type="submit" class="btn btn-primary ms-2">Filtrar</button>
+</form>
 
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -6,18 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetalleCompra extends Model
 {
-    protected $table = 'DetalleCompras';
+    protected $table = 'detalle_compras';
     protected $primaryKey = 'Id';
     
     // Desactivar timestamps automáticos
     public $timestamps = false;
 
-    protected $fillable = [
+     protected $fillable = [
         'Compra_Id',
         'Producto_Id',
-        'Cantidad',
-        'PrecioUnitario',
-        'Subtotal'
+        'PrecioU',
+        'Cantidad'
     ];
 
     protected $casts = [

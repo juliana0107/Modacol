@@ -1,15 +1,27 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('title', 'Gestión de Usuarios')
 
 @section('content')
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ route('usuarios.report') }}" class="btn btn-success">
-        <i class="fas fa-download me-1"></i> Descargar Reporte
-    </a>
-    <a href="{{ route('usuarios.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-1"></i> Nuevo Usuario
-    </a>
+        <a href="{{ route('usuarios.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Nuevo Usuario
+        </a>
+
+    <!-- Botón Exportar -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Exportar">
+            <i class="fas fa-download me-1"></i> Exportar
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="{{ route('usuarios.exportar.excel', array_merge(request()->all(), ['tipo' => 'completo'])) }}">
+                    <i class="far fa-file-excel me-2"></i> Reporte 
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 @if(session('success'))
@@ -27,14 +39,14 @@
         <div class="col-md-3">
             <input type="email" class="form-control" name="correo" placeholder="Correo" value="{{ request('correo') }}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select name="activo" class="form-control">
                 <option value="">Estado</option>
                 <option value="1" {{ request('activo') == '1' ? 'selected' : '' }}>Activo</option>
                 <option value="0" {{ request('activo') == '0' ? 'selected' : '' }}>Inactivo</option>
             </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select name="rol" class="form-control">
                 <option value="">Rol</option>
                 @foreach($roles as $rol)
@@ -44,11 +56,12 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-12 mt-2">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary ms-2">Filtrar</button>
         </div>
     </div>
 </form>
+
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead class="table-dark">

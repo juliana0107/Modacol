@@ -1,4 +1,4 @@
-@extends('layou')
+@extends('caja.Layout')
 
 @section('content')
 

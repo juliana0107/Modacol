@@ -45,6 +45,20 @@
             @enderror
         </div>
     </div>
+    <div class="col-md-3 mb-3">
+        <label for="productos">Productos</label>
+        <div id="productos">
+            <div class="producto-row">
+                <select name="productos[0][id]" class="form-control" required>
+                    @foreach ($productos as $producto)
+                        <option value="{{ $producto->Id }}">{{ $producto->Nombre }}</option>
+                    @endforeach
+                </select>
+                <input type="number" name="productos[0][cantidad]" class="form-control" placeholder="Cantidad" required min="1">
+                <input type="number" name="productos[0][precio]" class="form-control" placeholder="Precio Unitario" required min="0">
+            </div>
+        </div>
+    </div>
     
     <div class="mb-3">
         <label for="Observaciones" class="form-label">Observaciones</label>
@@ -54,60 +68,7 @@
         @enderror
     </div>
     
-    <hr>
     
-    <h4>Productos</h4>
-    
-    <div class="row mb-3">
-        <div class="col-md-5">
-            <label class="form-label">Seleccionar Producto</label>
-            <select class="form-select" id="productoSelect">
-                <option value="">Seleccionar producto</option>
-                @foreach($productos as $producto)
-                    <option value="{{ $producto->Id }}" data-precio="{{ $producto->Precio }}">
-                        {{ $producto->Nombre }} - ${{ number_format($producto->Precio, 2) }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label for="cantidad" class="form-label">Cantidad</label>
-            <input type="number" class="form-control" id="cantidad" min="1" value="1">
-        </div>
-        <div class="col-md-2">
-            <label for="precio" class="form-label">Precio Unitario</label>
-            <input type="number" class="form-control" id="precio" step="0.01" min="0">
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="button" class="btn btn-success" id="agregarProducto">
-                <i class="fas fa-plus me-1"></i> Agregar Producto
-            </button>
-        </div>
-    </div>
-    
-    <div class="table-responsive">
-        <table class="table table-striped" id="productosTable">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Subtotal</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los productos se agregarán dinámicamente aquí -->
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="3" class="text-end">Total:</th>
-                    <th id="totalCompra">$0.00</th>
-                    <th></th>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
     
     <div class="mt-3">
         <button type="submit" class="btn btn-success" id="btnGuardar">

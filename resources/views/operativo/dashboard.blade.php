@@ -1,4 +1,4 @@
-@extends('layo')
+@extends('operativo.layout')
 
 @section('content')
 

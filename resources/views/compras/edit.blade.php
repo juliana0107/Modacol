@@ -26,6 +26,22 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
+    <div class="col-md-3 mb-3">
+        <label for="productos">Productos</label>
+        <div id="productos">
+            @foreach ($compra->detalles as $index => $detalle)
+                <div class="producto-row">
+                    <select name="productos[{{ $index }}][id]" class="form-control" required>
+                        @foreach ($productos as $producto)
+                            <option value="{{ $producto->Id }}" {{ $detalle->Producto_Id == $producto->Id ? 'selected' : '' }}>{{ $producto->Nombre }}</option>
+                        @endforeach
+                    </select>
+                    <input type="number" name="productos[{{ $index }}][cantidad]" class="form-control" value="{{ $detalle->Cantidad }}" required min="1">
+                    <input type="number" name="productos[{{ $index }}][precio]" class="form-control" value="{{ $detalle->PrecioUnitario }}" required min="0">
+                </div>
+            @endforeach
+        </div>
+    </div>
         
         <div class="col-md-3 mb-3">
             <label for="FechaCompra" class="form-label">Fecha de Compra</label>

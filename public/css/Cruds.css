@@ -1,32 +1,29 @@
 /* Estilos para la tabla */
-* {
-    font-family: 'Montserrat' !important;
-}
+
 body {
   background: linear-gradient(to right, #000000, #c39212, #272d73, #7c0013);
   height: 100vh;
   margin: 0;
-}
+} 
 
 .table {
-    background-color: #f8f9fa; /* Fondo suave para la tabla */
+    background-color: #ffffff; 
     border-radius: 10px;
     overflow: hidden;
-}
-
-.table th,
+} 
+ .table th,
 .table td {
-    background-color: transparent; /* Removemos el fondo blanco */
-    border-color: #ddd; /* Hacemos que las celdas tengan un borde más suave */
-}
+    background-color: transparent; 
+    border-color: #ccc;  
+} 
 
-.table th {
-    color: #495057; /* Título de las columnas en un gris oscuro */
+ .table th {
+    color: #333; 
     font-weight: bold;
-}
+} 
 
 /* Estilo para el estado activo/inactivo */
-.badge {
+ .badge {
     font-size: 14px;
     font-weight: 600;
     padding: 8px 16px;
@@ -34,35 +31,39 @@ body {
 
 /* Estilo para los botones */
 .btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 14px;
-    border-radius: 20px;
-}
-
-.btn-warning {
-    background-color: #f39c12;
+    border-radius: 25px;
+} 
+ 
+.btn-warning:hover {
+    background-color: #e67e22;
     border-color: #e67e22;
-}
+} 
 
-.btn-success {
-    background-color: #2ecc71;
+ .btn-success:hover  {
+    background-color: #27ae60;
     border-color: #27ae60;
-}
+} 
 
-.btn-danger {
-    background-color: #e74c3c;
-    border-color: #c0392b;
-}
+ .btn-danger:hover {
+    background-color: #c0392b;
+    border-color: #e74c3c;
+} 
 
 /* Añadir color de hover para los botones */
-.btn:hover {
+ .btn:hover {
     opacity: 0.8;
-}
+} 
 
-/* Estilos generales */
-.table-responsive {
+ .table-responsive {
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+} 
+.container{
+    max-width: 1200px;
+    margin: 0 auto; 
 }
+ 

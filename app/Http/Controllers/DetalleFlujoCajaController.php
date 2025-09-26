@@ -3,63 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetalleFlujoCaja;
+use App\Models\FlujoCaja;
 use Illuminate\Http\Request;
 
 class DetalleFlujoCajaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Mostrar todos los detalles de flujo de caja
+    public function index(Request $request)
     {
-        //
+        $detalles = DetalleFlujoCaja::with(['flujoCaja', 'cliente', 'proveedor', 'categoria'])->get();
+        return view('detalleFlujoCaja.index', compact('detalles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Crear un nuevo detalle de flujo de caja
     public function create()
     {
-        //
+        $flujoCajas = FlujoCaja::all();
+        return view('detalleFlujoCaja.create', compact('flujoCajas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Almacenar un nuevo detalle de flujo de caja
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'Flujo_Id' => 'required|exists:flujo_caja,Id',
+            'Fecha' => 'required|date',
+            'Tipo_Movimiento' => 'required|in:Ingreso,Egreso',
+            'Monto' => 'required|numeric',
+            'Categoria_Id' => 'required|exists:categorias,Id',
+        ]);
+
+        DetalleFlujoCaja::create($request->all());
+        return redirect()->route('detalleFlujoCaja.index')->with('success', 'Detalle de flujo de caja creado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(DetalleFlujoCaja $detalleFlujoCaja)
+    // Editar un detalle de flujo de caja
+    public function edit($id)
     {
-        //
+        $detalle = DetalleFlujoCaja::findOrFail($id);
+        $flujoCajas = FlujoCaja::all();
+        return view('detalleFlujoCaja.edit', compact('detalle', 'flujoCajas'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(DetalleFlujoCaja $detalleFlujoCaja)
+    // Actualizar un detalle de flujo de caja
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'Flujo_Id' => 'required|exists:flujo_caja,Id',
+            'Fecha' => 'required|date',
+            'Tipo_Movimiento' => 'required|in:Ingreso,Egreso',
+            'Monto' => 'required|numeric',
+            'Categoria_Id' => 'required|exists:categorias,Id',
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, DetalleFlujoCaja $detalleFlujoCaja)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(DetalleFlujoCaja $detalleFlujoCaja)
-    {
-        //
+        $detalle = DetalleFlujoCaja::findOrFail($id);
+        $detalle->update($request->all());
+        return redirect()->route('detalleFlujoCaja.index')->with('success', 'Detalle de flujo de caja actualizado correctamente');
     }
 }

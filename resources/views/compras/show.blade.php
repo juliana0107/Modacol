@@ -10,7 +10,9 @@
         <div class="row">
             <div class="col-md-6">
                 <p><strong>Proveedor:</strong> {{ $compra->proveedor->RazonSocial }}</p>
-                <p><strong>Fecha de Compra:</strong> {{ $compra->FechaCompra->format('d/m/Y') }}</p>
+                <p><strong>Fecha de Compra:</strong> 
+                    {{ $compra->FechaCompra ? $compra->FechaCompra->format('d/m/Y') : 'No especificada' }}
+                </p>
             </div>
             <div class="col-md-6">
                 <p><strong>Estado:</strong> 
@@ -18,7 +20,7 @@
                         $compra->Estado == 'Completada' ? 'success' : 
                         ($compra->Estado == 'Pendiente' ? 'warning' : 'danger') 
                     }}">
-                        {{ $compra->Estado }}
+                        {{ $compra->Estado ?? 'Sin estado' }}
                     </span>
                 </p>
                 <p><strong>Total:</strong> ${{ number_format($compra->Total, 2) }}</p>
@@ -31,34 +33,40 @@
 </div>
 
 <h4>Productos</h4>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($compra->detalles as $detalle)
-            <tr>
-                <td>{{ $detalle->producto->Nombre }}</td>
-                <td>{{ $detalle->Cantidad }}</td>
-                <td>${{ number_format($detalle->PrecioUnitario, 2) }}</td>
-                <td>${{ number_format($detalle->Subtotal, 2) }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="3" class="text-end">Total:</th>
-                <th>${{ number_format($compra->Total, 2) }}</th>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+@if($compra->detalles->count() > 0)
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($compra->detalles as $detalle)
+                <tr>
+                    <td>{{ $detalle->producto->Nombre ?? 'Producto no encontrado' }}</td>
+                    <td>{{ $detalle->Cantidad }}</td>
+                    <td>${{ number_format($detalle->PrecioUnitario, 2) }}</td>
+                    <td>${{ number_format($detalle->Subtotal ?? ($detalle->Cantidad * $detalle->PrecioUnitario), 2) }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="text-end">Total:</th>
+                    <th>${{ number_format($compra->Total, 2) }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+@else
+    <div class="alert alert-info">
+        No hay productos registrados para esta compra.
+    </div>
+@endif
 
 <div class="mt-3">
     <a href="{{ route('compras.index') }}" class="btn btn-secondary">
