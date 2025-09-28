@@ -23,7 +23,7 @@ class LoginController extends Controller
     {
         $request->validate([
             'Correo' => 'required|email',
-            'password' => 'required|string'
+            'password' => 'required'
         ]);
 
         $usuario = Usuario::where('Correo', $request->Correo)->first();
