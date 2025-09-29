@@ -26,21 +26,12 @@
         </ul>
     </div>
 </div>
-
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-
-    <form method="GET" action="{{ route('ventas.index') }}" class="row g-2">
+<form method="GET" action="{{ route('ventas.index') }}" class="row g-2">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <input type="date" name="fecha_inicio" value="{{ request('fecha_inicio') }}" class="form-control" placeholder="Fecha Inicio">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <input type="date" name="fecha_fin" value="{{ request('fecha_fin') }}" class="form-control" placeholder="Fecha Fin">
         </div>       
         <div class="col-md-2">
@@ -50,7 +41,15 @@
                 <option value="{{ $cliente->Id }}" {{ request('cliente_id') == $cliente->Id ? 'selected' : '' }}>{{ $cliente->Nombre }}</option>
                 @endforeach
             </select>
-        </div>                
+        </div>      
+        <!-- <div class="col-md-2 ">
+            <select name="produto_id"  class="form-select">
+                <option value="">Seleccionar Producto</option>
+                    @foreach ($productos as $producto)
+                <option value="{{ $producto->Id }}" {{ request('produto_id') == $producto->Id ? 'selected' : '' }}>{{ $producto->Nombre }}</option>
+                @endforeach
+            </select>
+        </div>   -->        
         <div class="col-md-2">
             <select name="Activo" id="Activo" class="form-select">
                 <option value="">Seleccione estado</option>
@@ -58,6 +57,15 @@
                 <option value="0" {{ request('Activo') == '0' ? 'selected' : '' }}>Inactivo</option>
             </select>
         </div>
+       <!--  <div class="col-md-2">
+            <select name="usuario_id" class="form-select">
+                <option value="">Seleccionar Vendedor</option>
+                    @foreach ($usuarios as $usuario)
+                <option value="{{ $usuario->Id }}" {{ request('usuario_id') == $usuario->Id ? 'selected' : '' }}>{{ $usuario->Nombre }}</option>
+                @endforeach
+            </select>
+        </div> -->  
+        
         <div class="col-md-2">   
             <button type="submit" class="btn btn-primary w-100">
                 <i class="fas fa-filter"></i> Filtrar
@@ -74,6 +82,7 @@
                 <th>Fecha</th>
                 <th>Cliente</th>
                 <th>Vendedor</th>
+                <th>Producto</th>
                 <th>Valor Total</th>
                 <th>Estado</th>
                 <th class="text-center">Acciones</th>
@@ -86,6 +95,12 @@
                 <td>{{ $venta->Fecha }}</td>
                 <td>{{ $venta->cliente->Nombre ?? 'N/A' }}</td>
                 <td>{{ $venta->usuario->Nombre ?? 'N/A' }}</td>
+                <td>
+                    @if($venta->detalles->isNotEmpty())
+                        {{ $venta->detalles->first()->producto->Nombre ?? 'N/A' }}
+                    @else
+                    @endif
+                </td>
                 <td>${{ number_format($venta->ValorTotal, 2) }}</td>
                 <td>
                     <span class="badge bg-{{ $venta->Activo ? 'success' : 'danger' }}">

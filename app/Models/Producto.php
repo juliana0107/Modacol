@@ -24,4 +24,9 @@ class Producto extends Model
         'Cantidad' => 'integer',
         'Activo' => 'boolean'
     ];
+
+    public function detallesVentas()
+    {
+        return $this->hasMany(DetalleVenta::class, 'Producto_id');
+    }
 }

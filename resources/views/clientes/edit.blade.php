@@ -1,4 +1,3 @@
-// resources/views/clientes/edit.blade.php
 @extends('layouts.app')
 
 @section('title', 'Editar Cliente')
@@ -8,6 +7,15 @@
 
 <form method="POST" action="{{ route('clientes.update', $cliente->Id) }}">
     @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     @method('PUT')
     
     <div class="row">

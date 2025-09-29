@@ -21,7 +21,7 @@ class VentaController extends Controller
 {
     public function index(Request $request)
     {
-        $ventas = Venta::with('cliente', 'usuario')
+        $ventas = Venta::with('cliente', 'usuario', 'detalles.producto')
             ->when($request->filled('fecha_inicio'), function ($query) use ($request) {
                 return $query->whereDate('Fecha', '>=', $request->fecha_inicio);
             })
@@ -34,59 +34,180 @@ class VentaController extends Controller
             ->when($request->filled('usuario_id'), function ($query) use ($request) {
                 return $query->where('Usuario_id', $request->usuario_id);
             })
-            ->when($request->filled('estado'), function ($query) use ($request) {
-                return $query->where('Activo', $request->estado);
-            })
+            ->when($request->filled('producto_id'), function ($query) use ($request) {
+            return $query->whereHas('detalles', function($q) use ($request) {
+                $q->where('Producto_id', $request->producto_id);
+            });
+        })
+            ->when($request->filled('Activo'), function ($query) use ($request) {
+            return $query->where('Activo', $request->Activo);
+        })
+            
             ->get();
 
-        $clientes = Cliente::all();
-        $usuarios = Usuario::all();
-
-        return view('ventas.index', compact('ventas', 'clientes', 'usuarios'));
-    }
-
-    public function create() {
-        $clientes = Cliente::all();
-        $usuarios = Usuario::all();
+        $clientes = Cliente::where('Activo', true)->get();
+        $usuarios = Usuario::where('Activo', true)->get();
         $productos = Producto::where('Activo', true)->get();
-        return view('ventas.create', compact('clientes', 'usuarios', 'productos'));
+
+
+        return view('ventas.index', compact('ventas', 'clientes', 'usuarios','productos'));
     }
+
+   public function create() {
+    $clientes = Cliente::where('Activo', true)->get();
+    $usuarios = Usuario::where('Activo', true)->get();
+    $productos = Producto::where('Activo', true)->get();
+
+    ($productos);
+
+    return view('ventas.create', compact('clientes', 'usuarios', 'productos'));
+}
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'Fecha' => 'required|date',
-            'Cliente_id' => 'required|exists:Clientes,Id',
-            'Usuario_id' => 'required|exists:Usuarios,Id',
-            'ValorTotal' => 'required|numeric|min:0'
-        ]);
+{
+    $request->validate([
+        'Fecha' => 'required|date',
+        'Cliente_id' => 'required|exists:Clientes,Id',
+        'Usuario_id' => 'required|exists:Usuarios,Id',
+        'detalles' => 'required|array',  // Aseguramos que los detalles sean un array
+        'detalles.*.Producto_id' => 'required|exists:Productos,Id',  // Validamos que cada producto exista
+        'detalles.*.Cantidad' => 'required|numeric|min:1'  // Validamos que cada cantidad sea positiva
+    ]);
 
-        Venta::create($request->all());
-        return redirect()->route('ventas.index')->with('success', 'Venta creada correctamente');
+    // Inicializamos el valor total de la venta
+    $valorTotal = 0;
+
+    // Iteramos sobre los detalles de la venta para calcular el valor total
+    foreach ($request->detalles as $detalle) {
+        $producto = Producto::find($detalle['Producto_id']);
+
+        if (!$producto) {
+            return redirect()->back()->withErrors(['detalles' => 'Producto no encontrado.']);
+        }
+
+        if ($producto->Cantidad < $detalle['Cantidad']) {
+            return redirect()->back()->withErrors([
+                'detalles' => 'No hay suficiente stock para el producto: ' . $producto->Nombre
+            ]);
+        }
+
+        $producto->Cantidad -= $detalle['Cantidad'];
+        $producto->save();
+
+        $subTotal = $detalle['Cantidad'] * $producto->PrecioU;
+        $iva = $subTotal * ($producto->Iva / 100);
+        $valorTotal += $subTotal + $iva;
     }
+
+    // Crear la venta con el valor total calculado
+    $venta = Venta::create([
+        'Fecha' => $request->Fecha,
+        'Cliente_id' => $request->Cliente_id,
+        'Usuario_id' => $request->Usuario_id,
+        'ValorTotal' => $valorTotal  // Guardamos el valor total calculado
+    ]);
+
+    // Crear los detalles de la venta
+    foreach ($request->detalles as $detalle) {
+        $producto = Producto::find($detalle['Producto_id']);
+        $subTotal = $detalle['Cantidad'] * $producto->PrecioU;
+        $iva = $subTotal * ($producto->Iva / 100); // Calcular el IVA
+        
+        $producto->Cantidad -= $detalle['Cantidad'];
+        $producto->save();
+
+        // Crear el detalle de la venta
+        DetalleVenta::create([
+            'Venta_id' => $venta->Id,
+            'Producto_id' => $detalle['Producto_id'],
+            'Cantidad' => $detalle['Cantidad'],
+            'SubTotal' => $subTotal,
+            'Iva' => $iva
+        ]);
+    }
+
+    return redirect()->route('ventas.index')->with('success', 'Venta creada correctamente');
+}
+
 
    public function edit($id)
     {
         $venta = Venta::findOrFail($id);
         $clientes = Cliente::where('Activo', true)->get();
         $usuarios = Usuario::where('Activo', true)->get();
+        $productos = Producto::where('Activo', true)->get(); 
+
+        return view('ventas.edit', compact('venta', 'clientes', 'usuarios', 'productos'));
+    }
+
         
-        return view('ventas.edit', compact('venta', 'clientes', 'usuarios'));
+    
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'Fecha' => 'required|date',
+        'Cliente_id' => 'required|exists:Clientes,Id',
+        'Usuario_id' => 'required|exists:Usuarios,Id',
+        'detalles' => 'required|array',
+        'detalles.*.Producto_id' => 'required|exists:Productos,Id',
+        'detalles.*.Cantidad' => 'required|numeric|min:1'
+    ]);
+
+    // Obtener la venta
+    $venta = Venta::findOrFail($id);
+
+    // Calculamos el valor total
+    $valorTotal = 0;
+
+    foreach ($request->detalles as $detalle) {
+        $producto = Producto::find($detalle['Producto_id']);
+
+        if ($producto->Cantidad < $detalle['Cantidad']) {
+            return redirect()->back()->withErrors([
+                'detalles' => ['No hay suficiente stock para el producto: ' . $producto->Nombre]
+            ]);
+        }
+        $producto->Cantidad -= $detalle['Cantidad'];
+        $producto->save();
+
+        $subTotal = $detalle['Cantidad'] * $producto->PrecioU;
+        $iva = $subTotal * ($producto->Iva / 100); // Calcular el IVA
+        $valorTotal += $subTotal + $iva; // Sumar al valor total
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Fecha' => 'required|date',
-            'Cliente_id' => 'required|exists:Clientes,Id',
-            'Usuario_id' => 'required|exists:Usuarios,Id',
-            'ValorTotal' => 'required|numeric|min:0'
+    // Actualizamos la venta
+    $venta->update([
+        'Fecha' => $request->Fecha,
+        'Cliente_id' => $request->Cliente_id,
+        'Usuario_id' => $request->Usuario_id,
+        'ValorTotal' => $valorTotal
+    ]);
+
+    // Eliminar detalles antiguos
+    DetalleVenta::where('Venta_id', $venta->Id)->delete();
+
+    // Crear nuevos detalles
+    foreach ($request->detalles as $detalle) {
+        $producto = Producto::find($detalle['Producto_id']);
+        $subTotal = $detalle['Cantidad'] * $producto->PrecioU;
+        $iva = $subTotal * ($producto->Iva / 100); // Calcular el IVA
+
+
+        $producto->Stock -= $detalle['Cantidad'];
+        $producto->save();
+
+        DetalleVenta::create([
+            'Venta_id' => $venta->Id,
+            'Producto_id' => $detalle['Producto_id'],
+            'Cantidad' => $detalle['Cantidad'],
+            'SubTotal' => $subTotal,
+            'Iva' => $iva
         ]);
-
-        $venta = Venta::findOrFail($id);
-        $venta->update($request->all());
-        return redirect()->route('ventas.index')->with('success', 'Venta actualizada correctamente');
     }
+
+    return redirect()->route('ventas.index')->with('success', 'Venta actualizada correctamente');
+}
+
     public function toggle($id){
                 $venta = Venta::findOrFail($id);
                 $venta->Activo = !$venta->Activo;

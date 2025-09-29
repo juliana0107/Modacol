@@ -26,16 +26,25 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $usuario = Usuario::where('Correo', $request->Correo)->first();
+        $credentials = [
+        'Correo' => $request->Correo,
+        'password' => $request->password, 
+        'Activo' => 1
+        ];  
 
-        if ($usuario && $usuario->Contraseña === $request->password) {
-            Auth::login($usuario, $request->has('remember'));
-            
-            return $this->redirectToDashboard($usuario->Id_Rol);
-        }
-
-        return back()->with('error', 'Credenciales incorrectas');
+        if (Auth::attempt($credentials, $request->has('remember'))) {
+        return $this->redirectToDashboard(Auth::user()->Id_Rol);
     }
+
+    // Si la autenticación falla, verificamos si el usuario existe pero está inactivo
+    $usuario = Usuario::where('Correo', $request->Correo)->first();
+
+    if ($usuario && $usuario->Activo == 0) {
+        return back()->with('error', 'Usuario inactivo. Contacte al administrador.');
+    }
+
+        return back()->with('error', 'Credenciales incorrectas.');
+}
 
     protected function redirectToDashboard($rolId)
     {

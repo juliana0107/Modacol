@@ -7,6 +7,15 @@
 
 <form method="POST" action="{{ route('compras.store') }}" id="compraForm">
     @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     
     <div class="row">
         <div class="col-md-6 mb-3">

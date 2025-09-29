@@ -45,11 +45,11 @@ class ProveedorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'RazonSocial' => 'required|string|max:100',
+            'RazonSocial' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
             'Identificacion' => 'required|numeric|unique:Proveedores,Identificacion',
             'Direccion' => 'required|string|max:150',
             'Correo' => 'required|email|unique:Proveedores,Correo',
-            'Contacto' => 'required|string|max:100'
+            'Contacto' => 'required|numeric|digits:10',
         ]);
 
         Proveedor::create($request->all());
@@ -67,11 +67,11 @@ class ProveedorController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'RazonSocial' => 'required|string|max:100',
+            'RazonSocial' =>'required|regex:/^[a-zA-Z\s]+$/|max:255',
             'Identificacion' => 'required|numeric|unique:Proveedores,Identificacion,' . $id,
             'Direccion' => 'required|string|max:150',
             'Correo' => 'required|email|unique:Proveedores,Correo,' . $id,
-            'Contacto' => 'required|string|max:100'
+            'Contacto' => 'required|numeric|digits:10'
         ]);
 
         $proveedor = Proveedor::findOrFail($id);

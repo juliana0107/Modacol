@@ -43,30 +43,68 @@ class ClienteController extends Controller
         return view('clientes.create');
     }
 
-    public function store(Request $request) {
-        Cliente::create($request->all());
-        return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente');
-    }
+    public function store(Request $request)
+{
+    // Validación de los campos del cliente
+    $validated = $request->validate([
+        'Empresa' => 'required|string|max:255',
+        'Nombre' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
+        'Identificacion' => 'required|numeric|unique:Clientes,Identificacion',
+        'Contacto' => 'required|numeric|digits:10',
+        'Correo' => 'required|email|unique:Clientes,Correo',
+    ], [
+        'Empresa.required' => 'El campo empresa es obligatorio.',
+        'Correo.email' => 'El correo debe tener un formato válido.',
+        'Identificacion.unique' => 'La identificación ya está registrada.',
+        'Correo.unique' => 'El correo electrónico ya está registrado.',
+    ]);
+
+    // Si la validación pasa, crea el cliente
+    Cliente::create($validated);
+
+    // Redirige con un mensaje de éxito
+    return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente');
+}
+
 
         public function edit($id)
     {
         $cliente = Cliente::findOrFail($id);
         return view('clientes.edit', compact('cliente'));
     }
+    public function update(Request $request, $id)
+{
+    // Validación de los campos del cliente
+    $validated = $request->validate([
+        'Empresa' => 'required|string|max:255',
+        'Nombre' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
+        'Identificacion' => 'required|numeric|unique:Clientes,Identificacion,' . $id, // Permitimos la identificación actual
+        'Contacto' => 'required|numeric|digits:10',
+        'Correo' => 'required|email|unique:Clientes,Correo,' . $id, // Permitimos el correo actual
+    ], [
+        'Empresa.required' => 'El campo empresa es obligatorio.',
+        'Correo.email' => 'El correo debe tener un formato válido.',
+        'Identificacion.unique' => 'La identificación ya está registrada.',
+        'Correo.unique' => 'El correo electrónico ya está registrado.',
+    ]);
 
-        public function update(Request $request, $id)
-    {
-        $cliente = Cliente::findOrFail($id);
-        $cliente->update($request->all());
-        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente');
-    }
+    // Encontrar el cliente y actualizar los datos
+    $cliente = Cliente::findOrFail($id);
+    $cliente->update($validated);
+
+    // Redirige con un mensaje de éxito
+    return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente');
+}
+
 
     public function toggle($id)
     {
         $cliente = Cliente::findOrFail($id);
         $cliente->Activo = !$cliente->Activo;
         $cliente->save();
-        return redirect()->route('clientes.index');
+
+        $message = $cliente->Activo ? 'activado' : 'inactivado';
+        return redirect()->route('clientes.index')->with('success', "Cliente $message correctamente");
     }
 
 // Método para exportar clientes en formato CSV
@@ -214,7 +252,7 @@ class ClienteController extends Controller
             $sheet->setCellValue('A' . $row, $cliente->Id);
             $sheet->setCellValue('B' . $row, $cliente->Nombre);
             $sheet->setCellValue('C' . $row, $cliente->Correo);
-            $sheet->setCellValue('D' . $row, $cliente->Telefono ?? 'N/A');
+            $sheet->setCellValue('D' . $row, $cliente->Contacto ?? 'N/A');
             $sheet->setCellValue('E' . $row, $cliente->Activo ? 'ACTIVO' : 'INACTIVO');
             $sheet->setCellValue('F' . $row, $cliente->created_at ? $cliente->created_at->format('d/m/Y') : 'N/A');
             

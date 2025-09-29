@@ -11,7 +11,7 @@ class Cliente extends Model
 
     protected $table = 'Clientes';
     protected $primaryKey = 'Id';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'Empresa',

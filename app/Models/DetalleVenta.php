@@ -10,6 +10,8 @@ class DetalleVenta extends Model
     use HasFactory;
 
     protected $table = 'Detalles_Ventas';
+
+    public $timestamps = false;
     protected $fillable = 
     [
         'Venta_id', 

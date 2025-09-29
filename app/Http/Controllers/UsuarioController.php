@@ -55,7 +55,7 @@ class UsuarioController extends Controller
 {
     // Validación de campos
     $request->validate([
-        'Nombre' => 'required|alpha|max:100',
+        'Nombre' => 'required|regex:/^[a-zA-Z\s]+$/|max:255', // Solo letras
         'Correo' => 'required|email|unique:Usuarios,Correo', // Verifica que el correo sea único
         'Contraseña' => 'required|string|min:8', // Confirmación de la contraseña (repetir contraseña en el formulario)
         'Id_Rol' => 'required|exists:Roles,Id', // Verifica que el rol exista en la base de datos
@@ -82,7 +82,7 @@ class UsuarioController extends Controller
     public function update(Request $request, Usuario $usuario)
     {
         $request->validate([
-        'Nombre' => 'required|alpha|max:100',
+        'Nombre' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
         'Correo' => 'required|email|unique:Usuarios,Correo,' . $usuario->Id, // Asegura que el correo sea único, excepto el actual
         'Id_Rol' => 'required|exists:Roles,Id', // Verifica que el rol exista
         'Contraseña' => 'nullable|string|min:8', // La contraseña puede no ser modificada, si se pasa debe ser confirmada
@@ -99,12 +99,6 @@ class UsuarioController extends Controller
 
     return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado con éxito');
 }
-
-    public function destroy(Usuario $usuario)
-    {
-        $usuario->delete();
-        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado');
-    }
     public function toggle($id) 
 {
     $usuario = Usuario::findOrFail($id);

@@ -8,6 +8,15 @@
 
 <form action="{{ route('flujoCaja.store') }}" method="POST">
     @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="mb-3">
         <label for="Fecha" class="form-label">Fecha</label>
         <input type="date" class="form-control @error('Fecha') is-invalid @enderror" id="Fecha" name="Fecha" value="{{ old('Fecha') }}">

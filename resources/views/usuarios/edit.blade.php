@@ -7,6 +7,15 @@
 
 <form method="POST" action="{{ route('usuarios.update', $usuario->Id) }}">
     @csrf
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     @method('PUT')
     
     <div class="row">

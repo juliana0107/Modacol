@@ -5,9 +5,20 @@
 @section('content')
 <h2>Nuevo Cliente</h2>
 
+
+
 <form method="POST" action="{{ route('clientes.store') }}">
     @csrf
-    
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-md-6 mb-3">
             <label for="Empresa" class="form-label">Empresa</label>
